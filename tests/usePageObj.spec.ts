@@ -1,6 +1,7 @@
 import { expect, Locator, test } from "@playwright/test";
 import { PageManager } from "../page-objects/pageManager";
 import { faker } from "@faker-js/faker";
+import { argosScreenshot } from "@argos-ci/playwright";
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -10,6 +11,7 @@ test.beforeEach(async ({ page }) => {
 test("navigate to form page", async ({ page }) => {
   const pm = new PageManager(page);
   await pm.navigateTo().formLayoutsPage();
+  await argosScreenshot(page, "form layouts page");
 });
 
 test("parametrized methods", async ({ page }) => {
@@ -26,10 +28,10 @@ test("parametrized methods", async ({ page }) => {
       "Option 1"
     );
 
-    await page.screenshot({path: 'screenshots/formLayoutsPage.png'});
-    await page.locator('nb-card', {hasText: "Inline form"}).screenshot({path: 'screenshots/inlineForm.png'});
-    const buffer = await page.screenshot();
-    console.log(buffer.toString('base64'));
+  await argosScreenshot(page, "form layouts page");
+  await page.locator('nb-card', { hasText: "Inline form" }).screenshot({ path: 'screenshots/inlineForm.png' });
+  const buffer = await page.screenshot();
+  console.log(buffer.toString('base64'));
   // await pm.navigateTo().datePickerPage();
   // await pm.onDatePickerPage().selectCommonDatePickerDateFromToday(5);
   // await pm.onDatePickerPage().selectDatePickerWithRangeFromToday(5, 14);

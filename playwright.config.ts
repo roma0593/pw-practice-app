@@ -5,9 +5,18 @@ require('dotenv').config();
 
 export default defineConfig<TestOptions>({
   retries: 1,
-  reporter: [['json', {outputFile: 'test-results/jsonReport.json'}],
-  // ['allure-playwright']],
-  ['html']],
+  reporter: [
+    process.env.CI ? ["dot"] : ["list"],
+    ['json', { outputFile: 'test-results/jsonReport.json' }],
+    [
+      "@argos-ci/playwright/reporter",
+      {
+        // Upload to Argos on CI only.
+        uploadToArgos: !!process.env.CI
+      },
+    ],
+    // ['allure-playwright']],
+    ['html']],
   use: {
     baseURL: process.env.DEV === '1' ? 'http://localhost:4200'
       : process.env.STAGING === '1' ? 'http://localhost:4202'
@@ -16,6 +25,7 @@ export default defineConfig<TestOptions>({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
     video: {
       mode: 'off',
       size: { width: 1920, height: 1080 }
